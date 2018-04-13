@@ -64,6 +64,8 @@ declare var braintree: any;
 })
 export class NgxBraintreeComponent implements OnInit {
   @Output() paymentStatus: EventEmitter<any> = new EventEmitter<any>();
+  @Output() handleReady: EventEmitter<any> = new EventEmitter<any>();
+  @Output() handleError: EventEmitter<any> = new EventEmitter<any>();
 
   @Input() clientTokenURL: string;
   @Input() createPurchaseURL: string;
@@ -150,6 +152,7 @@ export class NgxBraintreeComponent implements OnInit {
         if (createErr) {
           console.error(createErr);
           this.errorMessage = createErr;
+          this.handleError.emit();
           return;
         }
         this.showPayButton = true;
@@ -165,6 +168,8 @@ export class NgxBraintreeComponent implements OnInit {
           this.enablePayButton = false;
           this.changeDetectorRef.detectChanges();
         });
+
+        this.handleReady.emit();
       });
       clearInterval(this.interval);
     }
